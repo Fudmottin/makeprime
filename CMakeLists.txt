@@ -18,3 +18,13 @@ target_sources(makeprime PRIVATE ${MILLER_RABIN_SOURCE_DIR}/miller_rabin.cpp)
 target_include_directories(makeprime PRIVATE ${MILLER_RABIN_SOURCE_DIR})
 target_link_libraries(makeprime PRIVATE Boost::random)
 
+# Optimization and debug settings
+if(NOT DEBUG)
+    message(STATUS "Building with optimizations (-O3, -DNDEBUG)")
+    target_compile_definitions(makeprime PRIVATE NDEBUG)
+    target_compile_options(makeprime PRIVATE -O3 -Wall -Wextra -pedantic)
+else()
+    message(STATUS "Building in debug mode (-g)")
+    target_compile_options(makeprime PRIVATE -g -Wall -Wextra -pedantic)
+endif()
+
