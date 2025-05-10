@@ -84,14 +84,24 @@ int main(int argc, char** argv) {
 
     auto worker = [&]() {
         boost::random::mt19937 rng(std::random_device{}());
+        const cpp_int lower_limit = cpp_int("1" + std::string(digits - 1, '0'));
+        const cpp_int upper_limit = cpp_int("1" + std::string(digits, '0'));
+
+        cpp_int candidate = generate_candidate(digits, rng);
+
         while (!found.load()) {
-            cpp_int candidate = generate_candidate(digits, rng);
-            if (fudmottin::millerRabinTest(candidate, rounds, rng)) {
+            if (!divisible_by_small_primes(candidate) &&
+                fudmottin::millerRabinTest(candidate, rounds, rng)) {
                 std::lock_guard<std::mutex> lock(result_mutex);
                 if (!found.exchange(true)) {
                     result = candidate;
                 }
                 break;
+            }
+
+            candidate += 2;
+            if (candidate >= upper_limit) {
+                candidate = generate_candidate(digits, rng);
             }
         }
     };
