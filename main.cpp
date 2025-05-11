@@ -90,8 +90,7 @@ int main(int argc, char** argv) {
         cpp_int candidate = generate_candidate(digits, rng);
 
         while (!found.load()) {
-            if (!divisible_by_small_primes(candidate) &&
-                fudmottin::millerRabinTest(candidate, rounds, rng)) {
+            if (fudmottin::millerRabinTest(candidate, rounds, rng)) {
                 std::lock_guard<std::mutex> lock(result_mutex);
                 if (!found.exchange(true)) {
                     result = candidate;
