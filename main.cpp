@@ -80,6 +80,7 @@ int main(int argc, char** argv) {
 
     std::atomic<bool> found(false);
     cpp_int result;
+    std::atomic<std::size_t> total_checked = 0;
     std::mutex result_mutex;
     std::mutex output_mutex;
 
@@ -89,11 +90,9 @@ int main(int argc, char** argv) {
         const cpp_int upper_limit = cpp_int("1" + std::string(digits, '0'));
 
         cpp_int candidate = generate_candidate(digits, rng);
-        std::size_t counter = 0;
 
         while (!found.load()) {
-            ++counter;
-            if (counter % 10 == 0) {
+            if (++total_checked % 20 == 0) {
                 std::lock_guard<std::mutex> out_lock(output_mutex);
                 std::cout << '*' << std::flush;
             }
@@ -117,6 +116,8 @@ int main(int argc, char** argv) {
 
     const unsigned num_threads = std::thread::hardware_concurrency();
     std::vector<std::thread> threads;
+
+    std::cout << "Number of threads: " << num_threads << std::endl;
     for (unsigned i = 0; i < num_threads; ++i) {
         threads.emplace_back(worker);
     }
