@@ -81,6 +81,7 @@ int main(int argc, char** argv) {
     std::atomic<bool> found(false);
     cpp_int result;
     std::mutex result_mutex;
+    std::mutex output_mutex;
 
     auto worker = [&]() {
         boost::random::mt19937 rng(std::random_device{}());
@@ -88,12 +89,21 @@ int main(int argc, char** argv) {
         const cpp_int upper_limit = cpp_int("1" + std::string(digits, '0'));
 
         cpp_int candidate = generate_candidate(digits, rng);
+        std::size_t counter = 0;
 
         while (!found.load()) {
+            ++counter;
+            if (counter % 10 == 0) {
+                std::lock_guard<std::mutex> out_lock(output_mutex);
+                std::cout << '*' << std::flush;
+            }
+
             if (fudmottin::millerRabinTest(candidate, rounds, rng)) {
                 std::lock_guard<std::mutex> lock(result_mutex);
                 if (!found.exchange(true)) {
                     result = candidate;
+                    std::lock_guard<std::mutex> out_lock(output_mutex);
+                    std::cout << '\n';
                 }
                 break;
             }
