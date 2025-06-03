@@ -64,7 +64,7 @@ int main(int argc, char** argv) {
 
     bool want_twin = false;
     want_twin = argc > 2 && std::string(argv[2]) == "--twin";
-    constexpr int checked_mod = 20;
+    int checked_mod = want_twin ? 10'000 : 20;
 
     std::atomic<bool> found(false);
     cpp_int result;
