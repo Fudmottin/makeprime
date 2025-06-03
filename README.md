@@ -1,11 +1,12 @@
 # makeprime
 
 Generates a random prime number with a specified number of digits using the Miller-Rabin primality test.
+Optionally generates twim primes if you're patient. Just pass the --twin flag at the end.
 
 ## Usage
 
 ```sh
-./makeprime <digits>
+./makeprime <digits> [--twin]
 ```
 
 ## Dependencies
