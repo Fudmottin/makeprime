@@ -1,19 +1,17 @@
 cmake_minimum_required(VERSION 3.16)
 project(makeprime LANGUAGES CXX)
 
-# Set modern C++ standard
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Suppress CMP0167 warning
 cmake_policy(SET CMP0167 NEW)
 
 # Dependencies
 include(cmake/FetchMillerRabin.cmake)
 find_package(Boost REQUIRED COMPONENTS random)
 
-# Target
-add_executable(makeprime main.cpp)
+# Source and include paths
+add_executable(makeprime src/main.cpp)
 target_sources(makeprime PRIVATE ${MILLER_RABIN_SOURCE_DIR}/miller_rabin.cpp)
 target_include_directories(makeprime PRIVATE ${MILLER_RABIN_SOURCE_DIR})
 target_link_libraries(makeprime PRIVATE Boost::random)
