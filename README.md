@@ -13,7 +13,7 @@ Optionally generates twim primes if you're patient. Just pass the --twin flag at
 
 * C++20 compiler
 * CMake 3.16+
-* Boost libraries (multiprecision, random)
+* GMP library
 
 ## License
 
