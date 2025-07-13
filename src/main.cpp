@@ -63,7 +63,7 @@ int main(int argc, char** argv) {
     }
 
     bool want_twin = argc == 3 && std::string(argv[2]) == "--twin";
-    int checked_mod = want_twin ? 50000 : 100;
+    int checked_mod = want_twin ? 10000 : 20;
 
     std::atomic<bool> found(false);
     mpz_class result;
@@ -91,12 +91,14 @@ int main(int argc, char** argv) {
             }
 
             if (!divisible_by_small_primes(candidate) &&
-                miller_rabin_gmp(candidate, rounds, rng)) {
+                mpz_probab_prime_p(candidate.get_mpz_t(), rounds) > 0) {
+
                 if (want_twin) {
                     twin_candidate = candidate;
                     twin_candidate += 2;
                     if (!divisible_by_small_primes(twin_candidate) &&
-                        miller_rabin_gmp(twin_candidate, rounds, rng)) {
+                        mpz_probab_prime_p(twin_candidate.get_mpz_t(), rounds) > 0) {
+
                         if (!found.exchange(true)) {
                             std::lock_guard<std::mutex> result_lock(result_mutex);
                             result = candidate;
