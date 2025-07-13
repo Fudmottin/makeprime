@@ -90,14 +90,12 @@ int main(int argc, char** argv) {
                 std::cout << '*' << std::flush;
             }
 
-            if (!divisible_by_small_primes(candidate) &&
-                mpz_probab_prime_p(candidate.get_mpz_t(), rounds) > 0) {
+            if (mpz_probab_prime_p(candidate.get_mpz_t(), rounds) > 0) {
 
                 if (want_twin) {
                     twin_candidate = candidate;
                     twin_candidate += 2;
-                    if (!divisible_by_small_primes(twin_candidate) &&
-                        mpz_probab_prime_p(twin_candidate.get_mpz_t(), rounds) > 0) {
+                    if (mpz_probab_prime_p(twin_candidate.get_mpz_t(), rounds) > 0) {
 
                         if (!found.exchange(true)) {
                             std::lock_guard<std::mutex> result_lock(result_mutex);
