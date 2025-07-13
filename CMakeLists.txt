@@ -3,20 +3,22 @@ project(makeprime LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
 cmake_policy(SET CMP0167 NEW)
 
-# Dependencies
-include(cmake/FetchMillerRabin.cmake)
-find_package(Boost REQUIRED COMPONENTS random)
+# Find GMP via pkg-config
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(GMP REQUIRED IMPORTED_TARGET gmp)
 
-# Source and include paths
-add_executable(makeprime src/main.cpp)
-target_sources(makeprime PRIVATE ${MILLER_RABIN_SOURCE_DIR}/miller_rabin.cpp)
-target_include_directories(makeprime PRIVATE ${MILLER_RABIN_SOURCE_DIR})
-target_link_libraries(makeprime PRIVATE Boost::random)
+# Executable sources
+add_executable(makeprime
+    src/main.cpp
+    src/gmp_mr.cpp
+)
 
-# Optimization and debug settings
+# Include + link
+target_link_libraries(makeprime PRIVATE PkgConfig::GMP)
+
+# Optimization/debug flags
 if(NOT DEBUG)
     message(STATUS "Building with optimizations (-O3, -DNDEBUG)")
     target_compile_definitions(makeprime PRIVATE NDEBUG)
