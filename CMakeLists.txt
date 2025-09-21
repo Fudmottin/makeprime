@@ -36,7 +36,6 @@ endif()
 # Executable
 add_executable(makeprime
     src/main.cpp
-    src/gmp_mr.cpp
 )
 
 # Link to GMP
@@ -54,5 +53,6 @@ if(NOT DEBUG)
 else()
     message(STATUS "Building in debug mode (-g)")
     target_compile_options(makeprime PRIVATE -g -Wall -Wextra -pedantic)
+    target_link_options(makeprime PRIVATE -fsanitize=address)
 endif()
 
