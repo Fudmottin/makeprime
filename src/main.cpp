@@ -9,12 +9,17 @@
 #include "gmp_mr.hpp"
 
 bool divisible_by_small_primes(const mpz_class& n) {
-    static const std::array<int, 40> small_primes = {
-        3, 5, 7, 11, 13, 17, 19, 23, 29,
+    static const std::array<int, 50> small_primes = {
+        2, 3, 5, 7, 11, 13, 17, 19, 23, 29,
         31, 37, 41, 43, 47, 53, 59, 61, 67, 71,
         73, 79, 83, 89, 97, 101, 103, 107, 109, 113,
         127, 131, 137, 139, 149, 151, 157, 163, 167, 173,
-        179
+        179, 181, 191, 193, 197, 199, 211, 223, 227, 229
+        // 233, 239, 241, 251, 257, 263, 269, 271, 277, 281,
+        // 283, 293, 307, 311, 313, 317, 331, 337, 347, 349,
+        // 353, 359, 367, 373, 379, 383, 389, 397, 401, 409,
+        // 419, 421, 431, 433, 439, 443, 449, 457, 461, 463,
+        // 467, 479, 487, 491, 499, 503, 509, 521, 523, 541
     };
 
     for (int p : small_primes) {
@@ -24,7 +29,7 @@ bool divisible_by_small_primes(const mpz_class& n) {
 }
 
 mpz_class generate_candidate(int digits, gmp_randclass& rng) {
-    static const char odd_digits[5] = {'1', '3', '5', '7', '9'};
+    static const char odd_digits[4] = {'1', '3', '7', '9'};
     mpz_class rand_digit;
     mpz_class candidate;
 
@@ -38,7 +43,7 @@ mpz_class generate_candidate(int digits, gmp_randclass& rng) {
             s += '0' + mpz_get_ui(rand_digit.get_mpz_t());
         }
 
-        rand_digit = rng.get_z_range(5); // last digit: odd
+        rand_digit = rng.get_z_range(4); // last digit: odd
         s += odd_digits[mpz_get_ui(rand_digit.get_mpz_t())];
 
         candidate = mpz_class(s);
@@ -90,7 +95,7 @@ int main(int argc, char** argv) {
                 std::cout << '*' << std::flush;
             }
 
-            if (mpz_probab_prime_p(candidate.get_mpz_t(), rounds) > 0) {
+            if (!divisible_by_small_primes(candidate) && mpz_probab_prime_p(candidate.get_mpz_t(), rounds) > 0) {
 
                 if (want_twin) {
                     twin_candidate = candidate;
