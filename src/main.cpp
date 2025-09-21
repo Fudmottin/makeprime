@@ -9,7 +9,7 @@
 #include <gmpxx.h>
 
 bool divisible_by_small_primes(const mpz_class& n) {
-    static const std::array<int, 1000> small_primes = {
+    static const std::array<unsigned long, 1000> small_primes = {
         2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 
         73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 
         179, 181, 191, 193, 197, 199, 211, 223, 227, 229, 233, 239, 241, 251, 257, 263, 269, 271, 277, 281, 
@@ -62,8 +62,11 @@ bool divisible_by_small_primes(const mpz_class& n) {
         7727, 7741, 7753, 7757, 7759, 7789, 7793, 7817, 7823, 7829, 7841, 7853, 7867, 7873, 7877, 7879, 7883, 7901, 7907, 7919
     };
 
-    for (int p : small_primes) 
-        if (n % p == 0) return true;
+    for (unsigned long p : small_primes) {
+        if (mpz_divisible_ui_p(n.get_mpz_t(), p)) {
+            return true;
+        }
+    }
 
     return false;
 }
