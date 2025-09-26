@@ -12,12 +12,12 @@ constexpr bool is_prime(int n) {
     return true;
 }
 
-constexpr std::array<int, 1000> generate_primes() {
-    std::array<int, 1000> primes{};
+constexpr std::array<int, 2000> generate_primes() {
+    std::array<int, 2000> primes{};
     int count = 0;
     int num = 2;
     
-    while (count < 1000) {
+    while (count < 2000) {
         if (is_prime(num)) {
             primes[count++] = num;
         }
@@ -29,13 +29,13 @@ constexpr std::array<int, 1000> generate_primes() {
 int main() {
     constexpr auto small_primes = generate_primes();
     
-    std::cout << "static const std::array<int, 1000> small_primes = {\n    ";
+    std::cout << "static const std::array<int, 2000> small_primes = {\n    ";
     for (size_t i = 0; i < small_primes.size(); ++i) {
         std::cout << small_primes[i];
         if (i < small_primes.size() - 1) {
             std::cout << ", ";
         }
-        if ((i + 1) % 20 == 0 && i < small_primes.size() - 1) {
+        if ((i + 1) % 10 == 0 && i < small_primes.size() - 1) {
             std::cout << "\n    ";
         }
     }
