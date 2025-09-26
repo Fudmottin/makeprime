@@ -253,7 +253,7 @@ mpz_class generate_candidate(int digits, gmp_randclass& rng) {
 }
 
 int main(int argc, char** argv) {
-    constexpr int rounds = 15;
+    constexpr int rounds = 25;
 
     if (argc < 2 || argc > 3) {
         std::cerr << "Usage: makeprime <digits> [--twin]\n";
@@ -299,7 +299,7 @@ int main(int argc, char** argv) {
                 std::cout << '*' << std::flush;
             }
 
-            if (/* !divisible_by_small_primes(candidate) && */ 
+            if (!divisible_by_small_primes(candidate) && 
                 (certainly = mpz_probab_prime_p(candidate.get_mpz_t(), rounds)) > 0) {
                 if (want_twin) {
                     twin_candidate = candidate;
