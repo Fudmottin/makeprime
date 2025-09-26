@@ -274,6 +274,7 @@ int main(int argc, char** argv) {
 
     std::atomic<bool> found(false);
     mpz_class result;
+    int result_certainly = 0;
     std::atomic<std::size_t> total_checked = 0;
     std::mutex result_mutex;
     std::mutex output_mutex;
@@ -289,6 +290,7 @@ int main(int argc, char** argv) {
         mpz_class upper_limit("1" + std::string(digits, '0'));
 
         candidate = generate_candidate(digits, rng);
+        int certainly = 0;
         mpz_class stride = 2 * (rng.get_z_range(500) + 1); // random odd stride
 
         while (!found.load(std::memory_order_relaxed)) {
@@ -297,7 +299,8 @@ int main(int argc, char** argv) {
                 std::cout << '*' << std::flush;
             }
 
-            if (!divisible_by_small_primes(candidate) && mpz_probab_prime_p(candidate.get_mpz_t(), rounds) > 0) {
+            if (/* !divisible_by_small_primes(candidate) && */ 
+                (certainly = mpz_probab_prime_p(candidate.get_mpz_t(), rounds)) > 0) {
                 if (want_twin) {
                     twin_candidate = candidate;
                     twin_candidate += 2;
@@ -305,6 +308,7 @@ int main(int argc, char** argv) {
                         if (!found.exchange(true)) {
                             std::lock_guard<std::mutex> result_lock(result_mutex);
                             result = candidate;
+                            result_certainly = certainly;
                             std::lock_guard<std::mutex> out_lock(output_mutex);
                             std::cout << '\n';
                         }
@@ -314,6 +318,7 @@ int main(int argc, char** argv) {
                     if (!found.exchange(true)) {
                         std::lock_guard<std::mutex> result_lock(result_mutex);
                         result = candidate;
+                        result_certainly = certainly;
                         std::lock_guard<std::mutex> out_lock(output_mutex);
                         std::cout << '\n';
                     }
@@ -351,6 +356,9 @@ int main(int argc, char** argv) {
         result += 2;
         std::cout << result.get_str() << '\n';
     }
+
+    if (result_certainly == 2) std::cout << "Certainly prime!\n";
+    else if (result_certainly == 1) std::cout << "Only probably prime.\n";
 
     std::cout << "Elapsed time: " << elapsed_seconds.count() << " seconds\n";
 
