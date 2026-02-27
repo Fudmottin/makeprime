@@ -1,0 +1,16 @@
+awk '
+  NR==1 || NR==2 {next}
+  NR==3 {
+    for(i=1; i<=length($0); i++) {
+      printf "%s", substr($0,i,1)
+      if (i % 6 == 0) {
+        printf " "
+        if (i % 60 == 0) printf "\n"     # newline every 5 groups (60 digits)
+      }
+    }
+    printf "\n"
+    next
+  }
+  {print}
+' 16807.txt > 16807-formatted.txt
+
