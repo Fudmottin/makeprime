@@ -235,7 +235,7 @@ mpz_class generate_candidate(int digits, gmp_randclass& rng,
       rand_digit = rng.get_z_range(9); // first digit: 1–9
       s += '1' + mpz_get_ui(rand_digit.get_mpz_t());
 
-      for (int i = 1; i < digits - 1 - int(lead.length()); ++i) {
+      for (int i = 3; i < digits - int(lead.length()); ++i) {
          rand_digit = rng.get_z_range(10); // middle digits: 0–9
          s += '0' + mpz_get_ui(rand_digit.get_mpz_t());
       }
@@ -308,7 +308,7 @@ int main(int argc, char** argv) {
 
       candidate = generate_candidate(digits, rng, lead);
       int certainly = 0;
-      mpz_class stride = 2 * (rng.get_z_range(500) + 1); // random odd stride
+      mpz_class stride = 2 * (rng.get_z_range(500) + 1); // random even stride
 
       while (!found.load(std::memory_order_relaxed)) {
          if (++total_checked % checked_mod == 0) {
