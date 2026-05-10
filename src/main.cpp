@@ -233,7 +233,7 @@ mpz_class generate_candidate(int digits, gmp_randclass& rng,
    do {
       std::string s = lead;
 
-      if (s.length() == 0) {
+      if (s == "") {
          rand_digit = rng.get_z_range(9); // first digit: 1–9
          s += '1' + mpz_get_ui(rand_digit.get_mpz_t());
       }
