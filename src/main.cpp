@@ -232,10 +232,13 @@ mpz_class generate_candidate(int digits, gmp_randclass& rng,
 
    do {
       std::string s = lead;
-      rand_digit = rng.get_z_range(9); // first digit: 1–9
-      s += '1' + mpz_get_ui(rand_digit.get_mpz_t());
 
-      for (int i = 3; i < digits - int(lead.length()); ++i) {
+      if (s.length() == 0) {
+         rand_digit = rng.get_z_range(9); // first digit: 1–9
+         s += '1' + mpz_get_ui(rand_digit.get_mpz_t());
+      }
+
+      for (int i = int(s.length()); i < digits - 1; ++i) {
          rand_digit = rng.get_z_range(10); // middle digits: 0–9
          s += '0' + mpz_get_ui(rand_digit.get_mpz_t());
       }
