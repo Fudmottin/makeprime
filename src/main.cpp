@@ -222,8 +222,8 @@ bool divisible_by_small_primes(const mpz_class& n) {
 
 mpz_class generate_candidate(int digits, gmp_randclass& rng,
                              std::string const& lead = std::string("")) {
-   if (digits <= 0) {
-      throw std::invalid_argument("digits must be positive");
+   if (digits < 2) {
+      throw std::invalid_argument("digits must be greater than one");
    }
 
    static const char odd_digits[4] = {'1', '3', '7', '9'};
@@ -243,10 +243,8 @@ mpz_class generate_candidate(int digits, gmp_randclass& rng,
          s += '0' + mpz_get_ui(rand_digit.get_mpz_t());
       }
 
-      if (digits > 1) {
-         rand_digit = rng.get_z_range(4); // last digit: odd
-         s += odd_digits[mpz_get_ui(rand_digit.get_mpz_t())];
-      }
+      rand_digit = rng.get_z_range(4); // last digit: odd
+      s += odd_digits[mpz_get_ui(rand_digit.get_mpz_t())];
 
       candidate = mpz_class(s);
 
