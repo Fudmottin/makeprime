@@ -253,11 +253,25 @@ mpz_class generate_candidate(int digits, gmp_randclass& rng,
    return candidate;
 }
 
+std::string encode_ascii_string_as_octal(const std::string& str) {
+   const char octal_digits[9] = "01234567";
+   std::string retstr = "";
+
+   for (auto c : str) {
+      retstr += octal_digits[(c >> 6) & 0x07];
+      retstr += octal_digits[(c >> 3) & 0x07];
+      retstr += octal_digits[c & 0x07];
+   }
+
+   return retstr;
+}
+
 int main(int argc, char** argv) {
    constexpr int rounds = 25;
 
    if (argc < 2) {
-      std::cerr << "Usage: makeprime <digits> [--twin] [--lead digits]\n";
+      std::cerr << "Usage: makeprime <digits> [--twin] [[--lead digits] || "
+                   "[--message \"text\"]]\n";
       return -1;
    }
 
@@ -281,6 +295,12 @@ int main(int argc, char** argv) {
          lead = std::string(argv[arg]);
       } else if (anarg == "--twin")
          want_twin = true;
+      else if (anarg == "--message") {
+         ++arg;
+         lead =
+            std::string("1") + encode_ascii_string_as_octal(
+                                  std::string(argv[arg])) + std::string("1");
+      }
    }
 
    if (digits < int(lead.length()) - 1) {
