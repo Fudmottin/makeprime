@@ -254,16 +254,23 @@ mpz_class generate_candidate(int digits, gmp_randclass& rng,
 }
 
 std::string encode_ascii_string_as_octal(const std::string& str) {
-   const char octal_digits[9] = "01234567";
-   std::string retstr = "";
+    if (str.empty()) return {};
 
-   for (auto c : str) {
-      retstr += octal_digits[(c >> 6) & 0x07];
-      retstr += octal_digits[(c >> 3) & 0x07];
-      retstr += octal_digits[c & 0x07];
-   }
+    std::string retstr;
+    retstr.resize(str.length() * 3);
 
-   return retstr;
+    static constexpr char oct[] = "01234567";
+    char* out = retstr.data();
+
+    for (char c : str)
+    {
+        unsigned char uc = static_cast<unsigned char>(c);
+        *out++ = oct[(uc >> 6) & 0x07];
+        *out++ = oct[(uc >> 3) & 0x07];
+        *out++ = oct[uc & 0x07];
+    }
+
+    return retstr;
 }
 
 int main(int argc, char** argv) {
