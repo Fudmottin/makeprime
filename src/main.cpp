@@ -304,8 +304,8 @@ int main(int argc, char** argv) {
       else if (anarg == "--message") {
          ++arg;
          lead =
-            std::string("1") + encode_ascii_string_as_octal(
-                                  std::string(argv[arg])) + std::string("1");
+            std::string("8") + encode_ascii_string_as_octal(
+                                  std::string(argv[arg])) + std::string("8");
       }
    }
 
